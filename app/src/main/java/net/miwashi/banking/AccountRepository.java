@@ -3,6 +3,7 @@ package net.miwashi.banking;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class AccountRepository {
 
@@ -28,7 +29,23 @@ public class AccountRepository {
     }
 
     public Account create(Account account) {
-
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(CONNECTION_STRING_FILE);
+            var stmt = con.prepareStatement("INSERT INTO ACCOUNT(HOLDER) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, account.getHolder());
+            stmt.execute();
+            var rs = stmt.getGeneratedKeys();
+            if(rs.next()){
+                account.setId(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            }catch(Exception ignore){}
+        }
         return account;
     }
 }
