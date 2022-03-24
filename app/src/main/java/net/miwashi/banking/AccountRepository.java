@@ -50,4 +50,30 @@ public class AccountRepository {
         }
         return account;
     }
+
+    public Account findById(int id) {
+        Connection connection = null;
+        Account account = null;
+        try{
+            connection = DriverManager.getConnection(CONNECTION_STRING_FILE);
+            var stmt = connection.prepareStatement("SELECT ID, HOLDER, BALANCE FROM ACCOUNT WHERE ID = ?");
+            stmt.setInt(1, id);
+            var rs = stmt.executeQuery();
+            if(rs.next()){
+                String holder = rs.getString(2);
+                int balance = rs.getInt(3);
+
+                account = new Account(holder);
+                account.setId(id);
+                account.setBalance(balance);
+            }
+        }catch(Exception e){
+
+        }finally{
+            try {
+                connection.close();
+            }catch(Exception ignore){}
+        }
+        return account;
+    }
 }

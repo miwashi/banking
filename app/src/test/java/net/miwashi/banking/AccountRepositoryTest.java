@@ -28,7 +28,11 @@ public class AccountRepositoryTest {
 
     @Test
     public void shouldReadAccount() throws Exception {
-        fail("Not yet implemented");
+        Account original = accountRepository.create(new Account("Mikael Wallin"));
+        Account inDatabase = accountRepository.findById(original.getId());
+        assertNotNull(inDatabase);
+        assertEquals(original.getHolder(), inDatabase.getHolder());
+        assertEquals(original.getId(), inDatabase.getId());
     }
     @Test
     public void shouldUpdateAccount() throws Exception {
